@@ -1,6 +1,7 @@
 package com.academy.back.service;
 
 import com.academy.back.dto.TurnoRequestDTO;
+import com.academy.back.exceptions.NoEncontradoException;
 import com.academy.back.model.Paciente;
 import com.academy.back.model.Profesional;
 import com.academy.back.model.Turno;
@@ -26,17 +27,17 @@ public class TurnoService {
     public Turno registrarTurno(TurnoRequestDTO dto){
 
         Paciente paciente = pacienteRepository.findById(dto.getPacienteID())
-                .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado"));
+                .orElseThrow(() -> new NoEncontradoException("Paciente no encontrado"));
 
         Profesional profesional = profesionalRepository.findbyId(dto.getProfesionalID())
-                .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado"));
+                .orElseThrow(() -> new NoEncontradoException("Profesional no encontrado"));
 
         boolean duplicado = turnoRepository.findAll().stream()
                 .anyMatch(t -> t.getPaciente().getId().equals(paciente.getId()) &&
                         t.getProfesional().getId().equals(profesional.getId()) &&
                         t.getFecha().equals(dto.getFecha()));
         if (duplicado){
-            throw new IllegalArgumentException("El Paciente ya tiene un turno con el Profesional en fecha seleccionada");
+            throw new FechaInvalidaException("El Paciente ya tiene un turno con el Profesional en fecha seleccionada");
         }
 
         Turno turno = new Turno(null, paciente, profesional, dto.getFecha());
