@@ -9,6 +9,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Turno {
+
+    private Long id;
     private Paciente paciente;
     private Profesional profesional;
     private LocalDate fecha;
