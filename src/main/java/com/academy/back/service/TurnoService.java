@@ -10,6 +10,7 @@ import com.academy.back.repository.PacienteRepository;
 import com.academy.back.repository.ProfesionalRepository;
 import com.academy.back.repository.TurnoRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TurnoService {
 
@@ -25,31 +27,49 @@ public class TurnoService {
     private final ProfesionalRepository profesionalRepository;
     private final PacienteRepository pacienteRepository;
 
-    public Turno registrarTurno(TurnoRequestDTO dto){
+    //Registra un nuevo turno, validando la existencia del paciente y profesional y evitando duplicados
+    public Turno registrarTurno(TurnoRequestDTO dto) {
+        log.info("Registrando Turno");
 
+        //Validar que Paciente exista
         Paciente paciente = pacienteRepository.findById(dto.getPacienteID())
-                .orElseThrow(() -> new NoEncontradoException("Paciente no encontrado"));
+                .orElseThrow(() -> {
+                    log.error("Paciente" + dto.getPacienteID() + "no encontrado");
+                    return new NoEncontradoException("Paciente no encontrado");
+                });
 
+        //Validar que el Profesional exista
         Profesional profesional = profesionalRepository.findbyId(dto.getProfesionalID())
-                .orElseThrow(() -> new NoEncontradoException("Profesional no encontrado"));
+                .orElseThrow(() -> {
+                    log.error("Profesional" + dto.getProfesionalID() + "no encontrado");
+                    return new NoEncontradoException("Profesional no encontrado");
+                });
 
+
+        //Validar que no exista turno duplicado
         boolean duplicado = turnoRepository.findAll().stream()
                 .anyMatch(t -> t.getPaciente().getId().equals(paciente.getId()) &&
                         t.getProfesional().getId().equals(profesional.getId()) &&
                         t.getFecha().equals(dto.getFecha()));
-        if (duplicado){
+        if (duplicado) {
+            log.warn("ERROR: El Paciente ya tiene turno con el Profesional el" + dto.getFecha());
             throw new FechaInvalidaException("El Paciente ya tiene un turno con el Profesional en fecha seleccionada");
         }
 
+        //Crar y Guardar Turno
         Turno turno = new Turno(null, paciente, profesional, dto.getFecha());
-        return turnoRepository.save(turno);}
+        Turno turnoguardado = turnoRepository.save(turno);
 
+        log.info("Turno registrado exitosamente con ID" + turno.getId());
+        return turnoguardado;
+    }
     public List<Turno> listarTodos(){
         return turnoRepository.findAll();}
 
     public void eliminarTurno(Long id){
         turnoRepository.delete(id);}
 
+    //Buscar turnos por rango de fechas especifico
     public List<Turno> buscarRango(LocalDate desde, LocalDate hasta){
         return turnoRepository.findAll().stream()
                 .filter(t -> !t.getFecha().isBefore(desde) && !t.getFecha().isAfter(hasta))
