@@ -1,6 +1,7 @@
 package com.academy.back.service;
 
 import com.academy.back.dto.TurnoRequestDTO;
+import com.academy.back.exceptions.FechaInvalidaException;
 import com.academy.back.exceptions.NoEncontradoException;
 import com.academy.back.model.Paciente;
 import com.academy.back.model.Profesional;
