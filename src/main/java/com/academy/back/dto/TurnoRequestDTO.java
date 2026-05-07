@@ -12,7 +12,7 @@ public class TurnoRequestDTO {
     private Long pacienteID;
     @NotNull (message = "ERROR: ID del profesional obligatorio")
     private Long profesionalID;
-    @FutureOrPresent
+    @FutureOrPresent(message = "Epa! No tenemos una maquina del tiempo, pone una fecha presente o futura")
     private LocalDate fecha;
 
 }

@@ -28,7 +28,7 @@ public class PacienteController {
     }
 
     //Endpoint para obtener un paciente especifico
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<Paciente> Buscar(@PathVariable Long id) {
         log.info("Peticion recibida, buscando paciente: {}", id);
         return ResponseEntity.ok(pacienteService.buscar(id));

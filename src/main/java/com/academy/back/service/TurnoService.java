@@ -53,7 +53,7 @@ public class TurnoService {
                         t.getFecha().equals(dto.getFecha()));
         if (duplicado) {
             log.warn("ERROR: El Paciente ya tiene turno con el Profesional el {}", dto.getFecha());
-            throw new FechaInvalidaException("El Paciente ya tiene un turno con el Profesional en fecha seleccionada");
+            throw new FechaInvalidaException("El Paciente ya tiene un turno con el Profesional en la fecha seleccionada");
         }
 
         //Crar y Guardar Turno
@@ -73,6 +73,14 @@ public class TurnoService {
     public List<Turno> buscarRango(LocalDate desde, LocalDate hasta){
         return turnoRepository.findAll().stream()
                 .filter(t -> !t.getFecha().isBefore(desde) && !t.getFecha().isAfter(hasta))
+                .collect(Collectors.toList());
+    }
+
+    //Buscar turnos por fecha exacta
+    public List<Turno> buscarFechaExacta(LocalDate fecha) {
+        log.info("Filtrando turnos para el: {}", fecha);
+        return turnoRepository.findAll().stream()
+                .filter(t -> t.getFecha().equals(fecha))
                 .collect(Collectors.toList());
     }
 

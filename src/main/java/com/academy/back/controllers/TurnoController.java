@@ -44,6 +44,14 @@ public class TurnoController {
         return ResponseEntity.ok(turnoService.listarTodos());
     }
 
+    // Endpoint para buscar turnos por fecha exacta
+    @GetMapping("/fecha/{fecha}")
+    public ResponseEntity<List<Turno>> buscarPorFecha(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
+        log.info("Peticion Recibida: Buscando turnos para la fecha exacta {}", fecha);
+        return ResponseEntity.ok(turnoService.buscarFechaExacta(fecha));
+    }
+
     //Eliminar turnos usando ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarTurno(@PathVariable Long id){
