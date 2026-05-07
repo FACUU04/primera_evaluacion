@@ -20,7 +20,7 @@ public class ProfesionalRepository {
         return profesional;
     }
 
-    public List<Profesional> findAll(Long id) {
+    public List<Profesional> findAll() {
         return new ArrayList<>(profesionales.values());}
 
     public Optional<Profesional> findbyId(Long id) {
