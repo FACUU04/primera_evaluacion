@@ -17,11 +17,15 @@ public class ProfesionalService {
 
     private final ProfesionalRepository profesionalRepository;
 
+    //Registrar un nuevo profesional
     public Profesional crear(Profesional profesional) {
         log.info("Creando profesional: {}", profesional.getNombreCompleto());
-        return profesionalRepository.save(profesional);
+        Profesional profesionalGuardado = profesionalRepository.save(profesional);
+        log.info("Profesional: {} registrado exitosamente con ID: {}", profesionalGuardado, profesional.getId());
+        return profesionalGuardado;
     }
 
+    //Listar todos los profesionales y Filtrar por especialidad si se desea
     public List<Profesional> ListarEspecialidad(String especialidad) {
         if (especialidad == null || especialidad.trim().isEmpty()) {
             log.info("Listando todos los profesionales ");

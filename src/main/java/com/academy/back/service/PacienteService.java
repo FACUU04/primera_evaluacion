@@ -17,24 +17,33 @@ public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
 
+    //Registra un nuevo paciente
         public Paciente crear(Paciente paciente) {
-            log.info("Creando nuevo paciente DNI:" + paciente.getDni());
-            return pacienteRepository.save(paciente);
+            log.info("Creando nuevo paciente DNI: {}", paciente.getDni());
+            Paciente pacienteGuardado = pacienteRepository.save(paciente);
+            log.info("Paciente {} guardado exitosamente", pacienteGuardado);
+            return pacienteGuardado;
         }
 
+        //Buscar por ID, lanza excepcion si no se encuentra
         public Paciente buscar(Long id) {
-            log.info("Buscando paciente por ID:" + id);
+            log.info("Buscando paciente por ID: {}", id);
             return pacienteRepository.findById(id)
-                    .orElseThrow(() -> new NoEncontradoException("Paciente no encontrado con ID" + id)) ;
+                    .orElseThrow(() -> {
+                        log.error("ERROR: Paciente con ID: {} no encontrado", id);
+                        return new NoEncontradoException("Paciente no encontrado con ID" + id);
+                    });
         }
 
+        //Devuelve la lista completa de pacientes registrados
         public List<Paciente> Todos() {
             log.info("Listando todos los pacientes");
             return pacienteRepository.findAll();
         }
 
+        //Eliminar paciente de sistema por ID
         public void Eliminar (Long id){
-            log.info("Eliminando paciente por ID:" + id);
+            log.info("Eliminando el paciente ID: {}", id);
             pacienteRepository.delete(id);
         }
 }

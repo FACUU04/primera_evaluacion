@@ -34,14 +34,14 @@ public class TurnoService {
         //Validar que Paciente exista
         Paciente paciente = pacienteRepository.findById(dto.getPacienteID())
                 .orElseThrow(() -> {
-                    log.error("Paciente" + dto.getPacienteID() + "no encontrado");
+                    log.error("Paciente {} no encontrado", dto.getPacienteID());
                     return new NoEncontradoException("Paciente no encontrado");
                 });
 
         //Validar que el Profesional exista
         Profesional profesional = profesionalRepository.findbyId(dto.getProfesionalID())
                 .orElseThrow(() -> {
-                    log.error("Profesional" + dto.getProfesionalID() + "no encontrado");
+                    log.error("Profesional {} no encontrado", dto.getProfesionalID());
                     return new NoEncontradoException("Profesional no encontrado");
                 });
 
@@ -52,7 +52,7 @@ public class TurnoService {
                         t.getProfesional().getId().equals(profesional.getId()) &&
                         t.getFecha().equals(dto.getFecha()));
         if (duplicado) {
-            log.warn("ERROR: El Paciente ya tiene turno con el Profesional el" + dto.getFecha());
+            log.warn("ERROR: El Paciente ya tiene turno con el Profesional el {}", dto.getFecha());
             throw new FechaInvalidaException("El Paciente ya tiene un turno con el Profesional en fecha seleccionada");
         }
 
@@ -60,7 +60,7 @@ public class TurnoService {
         Turno turno = new Turno(null, paciente, profesional, dto.getFecha());
         Turno turnoguardado = turnoRepository.save(turno);
 
-        log.info("Turno registrado exitosamente con ID" + turno.getId());
+        log.info("Turno registrado exitosamente con ID: {}", turno.getId());
         return turnoguardado;
     }
     public List<Turno> listarTodos(){
